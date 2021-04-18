@@ -1,44 +1,120 @@
 import numpy as np
 
 import matplotlib.pyplot as plt
+from numpy import random
 
 discrete_grid = np.zeros((200, 200, 36), dtype=float)
 
-initial_pose = [0, 0]
+groundtruth_poses = []
 
-dx = 10
-dy = 5
+### Initial Setting ###
 
-mean = [initial_pose[0] + dx, initial_pose[1] + dy]
-cov = [[1, 0], [0, 100]]
-odom_est = np.random.multivariate_normal(mean, cov, 5000).T
+pose = [0, 0]
+groundtruth_poses.append(pose)
 
-sample_idx_mask = np.random.randint(low=0, high=odom_est.shape[1], size=500)
-print(sample_idx_mask.shape)
+print('Initial pose : {}'.format(pose))
+plt.plot(pose[0], pose[1], 'x')
 
-sample_odom_est = odom_est[:, sample_idx_mask]
-print(sample_odom_est.shape)
+### Iterative Odometry Pose Estimation ###
 
-dx = 100
-dy = 5
+# Control Commands
 
-plt.plot(initial_pose[0], initial_pose[1], 'x')
+for iteration in range(5):
 
-plt.plot(sample_odom_est[0], sample_odom_est[1], 'x')
+    print('Iteration : {}'.format(iteration))
 
-for sample_odom in zip(sample_odom_est.T):
+    if iteration == 0:
 
-    mean = [sample_odom[0][0] + dx, sample_odom[0][1] + dy]
-    cov = [[1, 0], [0, 100]]
-    odom_est = np.random.multivariate_normal(mean, cov, 5000).T
+        # Control Commands
+        dx = random.randint(low=10, high=30, size=1)[0]
+        dy = random.randint(low=10, high=30, size=1)[0]
+        dtheta = random.uniform(low=-3.14, high=3.14, size=1)[0]
 
-    print(odom_est.shape)
+        pose = [pose[0] + dx, pose[1] + dy]
+        groundtruth_poses.append([pose[0], pose[1]])
 
-    sample_idx_mask = np.random.randint(low=0, high=odom_est.shape[1], size=500)
+        translation = np.sqrt(np.sum(np.sqrt([dx, dy])))
 
-    sample_odom_est = odom_est[:, sample_idx_mask]
+        mean = [pose[0], pose[1]]
+        cov = [[translation, 0], 
+               [0, translation]]
+        odom_est = np.random.multivariate_normal(mean, cov, 5000).T
 
-    plt.plot(sample_odom_est[0], sample_odom_est[1], 'x')
+        sample_idx_mask = np.random.randint(low=0, high=odom_est.shape[1], size=100)
+
+        sample_odom_est = odom_est[:, sample_idx_mask]
+
+        plt.plot(sample_odom_est[0], sample_odom_est[1], 'x')
+        plt.plot(groundtruth_poses[iteration+1][0], groundtruth_poses[iteration+1][1], 'o')
+
+        pose_est_x = np.mean(sample_odom_est[0])
+        pose_est_y = np.mean(sample_odom_est[1])
+        print(pose_est_x)
+        print(pose_est_y)
+        plt.plot(pose_est_x, pose_est_y, 'o')
+
+    else:
+        dx = random.randint(low=10, high=30, size=1)[0]
+        dy = random.randint(low=10, high=30, size=1)[0]
+        dtheta = random.uniform(low=-3.14, high=3.14, size=1)[0]
+        
+        pose = [pose[0] + dx, pose[1] + dy]
+        groundtruth_poses.append([pose[0], pose[1]])
+
+        translation = np.sqrt(np.sum(np.sqrt([dx, dy])))
+
+        mean = [pose_est_x + dx, pose_est_y + dy]
+        cov = [[translation, 0], 
+               [0, translation]]
+        odom_est = np.random.multivariate_normal(mean, cov, 5000).T
+
+        sample_idx_mask = np.random.randint(low=0, high=odom_est.shape[1], size=100)
+
+        sample_odom_est = odom_est[:, sample_idx_mask]
+
+        plt.plot(sample_odom_est[0], sample_odom_est[1], 'x')
+        plt.plot(groundtruth_poses[iteration+1][0], groundtruth_poses[iteration+1][1], 'o')
+
+        pose_est_x = np.mean(sample_odom_est[0])
+        pose_est_y = np.mean(sample_odom_est[1])
+        print(pose_est_x)
+        print(pose_est_y)
+        plt.plot(pose_est_x, pose_est_y, 'o')
+
+        # dx = random.randint(low=10, high=30, size=1)[0]
+        # dy = random.randint(low=10, high=30, size=1)[0]
+        # dx += 10
+        # dy = 0
+        # dtheta = 1
+
+        # pose = [pose[0] + dx, pose[1] + dy]
+        # groundtruth_poses.append([pose[0] + dx, pose[1] + dy])
+
+        # translation = np.sqrt(np.sum(np.sqrt([dx, dy])))
+
+        # idx = 0
+        # for sample_odom in zip(sample_odom_est.T):
+
+        #     mean = [sample_odom[0][0] + dx, sample_odom[0][1] + dy]
+        #     cov = [[translation, 0], 
+        #            [0, translation]]
+        #     odom_est = np.random.multivariate_normal(mean, cov, 5000).T
+
+        #     if idx == 0:
+        #         concat_array = odom_est
+        #         idx += 1
+
+        #     else:
+        #         concat_array = np.concatenate((concat_array, odom_est), axis=1)
+
+        # print(concat_array.shape)
+
+        # sample_idx_mask = np.random.randint(low=0, high=concat_array.shape[1], size=100)
+
+        # sample_odom_est = concat_array[:, sample_idx_mask]
+
+        # plt.plot(sample_odom_est[0], sample_odom_est[1], 'x')
+        # plt.plot(groundtruth_poses[iteration+1][0], groundtruth_poses[iteration+1][1], 'o')
 
 plt.axis('equal')
 plt.show()
