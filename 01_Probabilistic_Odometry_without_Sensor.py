@@ -33,7 +33,8 @@ for iteration in range(5):
         pose = [pose[0] + dx, pose[1] + dy]
         groundtruth_poses.append([pose[0], pose[1]])
 
-        translation = np.sqrt(np.sum(np.sqrt([dx, dy])))
+        translation = np.sqrt(dx**2 + dy**2)
+        print('Translation : {}'.format(translation))
 
         mean = [pose[0], pose[1]]
         cov = [[translation, 0], 
@@ -61,7 +62,8 @@ for iteration in range(5):
         pose = [pose[0] + dx, pose[1] + dy]
         groundtruth_poses.append([pose[0], pose[1]])
 
-        translation = np.sqrt(np.sum(np.sqrt([dx, dy])))
+        translation = np.sqrt(dx**2 + dy**2)
+        print('Translation : {}'.format(translation))
 
         mean = [pose_est_x + dx, pose_est_y + dy]
         cov = [[translation, 0], 
