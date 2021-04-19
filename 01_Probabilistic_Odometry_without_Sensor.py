@@ -18,7 +18,12 @@ print('Initial pose : {}'.format(pose))
 plt.plot(pose[0], pose[1], 'o')
 plt.arrow(pose[0], pose[1], 20 * np.cos(pose[2]), 20 * np.sin(pose[2]), width=1)
 
-sample_odom_est = np.ndarray(shape=(2, 1),buffer=np.array([pose]))
+##########################################
+### Iterative Odometry Pose Estimation ###
+##########################################
+
+sample_odom_est = np.ndarray(shape=(2, 1),buffer=np.array([pose]))  # Initial setup for odometry estimation samples
+
 for iteration in range(10):
 
     print('Iteration : {}'.format(iteration))
