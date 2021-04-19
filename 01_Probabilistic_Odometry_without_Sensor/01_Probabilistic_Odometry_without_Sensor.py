@@ -11,7 +11,7 @@ groundtruth_poses = []
 ### Initial Setting ###
 #######################
 
-pose = [0, 0, 0]    # x [m], y [m], heading [radian]
+pose = [0, 0, 0]    # x [m], y [m], orientation [radian]
 groundtruth_poses.append(pose)
 
 print('Initial pose : {}'.format(pose))
@@ -51,9 +51,7 @@ for iteration in range(10):
             
         idx_rotation = 0
         for rotation in zip(rotation_est):
-            # print(rotation[0])
-            # plt.plot(translation * np.cos(pose[2] + rotation[0]) + sample_odom[0][0], translation * np.sin(pose[2] + rotation[0]) + sample_odom[0][1], 'x', alpha=0.5)
-
+            
             # For each noisy pose estimation, apply translation and sample Gaussian distriubtion.
             # Covariance of the distribution depends on the value of translation.
             # This is because longer the robot travels, its odometry will have more likelihood to receive noise.
