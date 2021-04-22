@@ -1,14 +1,9 @@
 import numpy as np
 
 import matplotlib.pyplot as plt
-from numpy import random
 
-sequence_01_commands = np.array([[1, 0, 0], [1, 0, 1.57], [0, 1, -1.57], [1, 0, 0], [1, 0 , -1.57], [0, -1, 1.57], [1, 0, 0]])
-
-# sequence_01_commands = np.array([[1, 0, 0], [1, 0, 1.57], [0, 1, -1.57]])
-# sequence_02_commands = np.array([[1, 0, 0], [-1, 0, 0], [1, 0, 0], [-1, 0, 0], [1, 0, 0], [-1, 0, 0], [1, 0, 0], [-1, 0, 0]])
-sequence_03_commands = np.array([[0, 0, 0.174], [0, 0, 0.348], [0, 0, 0.174], [0, 0, 0.522], [0, 0, 0.696], [0, 0, 0.87],])
-
+main_sequence_commands = np.array([[0.5, 0, 0], [1.0, 0, 0], [1, 0, 0.785], [1, 0, 1.57], [0, 1, -0.785], [1, 0, 0], [1, 0 , -0.785], [0, -3, 1.57], 
+                                   [0.5, 0, 0], [1.0, 0, 0], [1, 0, 0.785], [1, 0, 1.57], [0, 1, -0.785], [1, 0, 0], [1, 0 , -0.785], [0, 3, 0]])
 
 def probabilstic_odom_estimation(commands, translation_variance_scale=0.1, rotation_variance_scale=0.1):
 
@@ -27,7 +22,7 @@ def probabilstic_odom_estimation(commands, translation_variance_scale=0.1, rotat
     print('-----------------------------------------------------')
 
     plt.plot(pose[0], pose[1], 'o')
-    plt.arrow(pose[0], pose[1], 0.05 * np.cos(pose[2]), 0.05 * np.sin(pose[2]), width=0.01)
+    plt.arrow(pose[0], pose[1], 0.1 * np.cos(pose[2]), 0.1 * np.sin(pose[2]), width=0.03)
 
     ##########################################
     ### Iterative Odometry Pose Estimation ###
@@ -60,7 +55,6 @@ def probabilstic_odom_estimation(commands, translation_variance_scale=0.1, rotat
         idx_odom = 0
         for sample_odom in zip(sample_odom_est.T):
                 
-            idx_rotation = 0
             for rotation in zip(rotation_est):
                 
                 # For each noisy pose estimation, apply translation and sample Gaussian distriubtion.
@@ -90,9 +84,9 @@ def probabilstic_odom_estimation(commands, translation_variance_scale=0.1, rotat
 
         plt.plot(sample_odom_est[0], sample_odom_est[1], 'x')
         plt.plot(groundtruth_poses[iteration+1][0], groundtruth_poses[iteration+1][1], 'o')
-        plt.arrow(groundtruth_poses[iteration+1][0], groundtruth_poses[iteration+1][1], 0.05 * np.cos(groundtruth_poses[iteration+1][2]), 0.05 * np.sin(groundtruth_poses[iteration+1][2]), width=0.01)
+        plt.arrow(groundtruth_poses[iteration+1][0], groundtruth_poses[iteration+1][1], 0.1 * np.cos(groundtruth_poses[iteration+1][2]), 0.1 * np.sin(groundtruth_poses[iteration+1][2]), width=0.03)
 
-        plt.arrow(groundtruth_poses[iteration][0], groundtruth_poses[iteration][1], 0.05 * np.cos(groundtruth_poses[iteration][2] + rotation_1), 0.05 * np.sin(groundtruth_poses[iteration][2] + rotation_1), width=0.01, color='red')
+        plt.arrow(groundtruth_poses[iteration][0], groundtruth_poses[iteration][1], 0.1 * np.cos(groundtruth_poses[iteration][2] + rotation_1), 0.1 * np.sin(groundtruth_poses[iteration][2] + rotation_1), width=0.03, color='red')
 
         pose_est_x = np.mean(sample_odom_est[0])
         pose_est_y = np.mean(sample_odom_est[1])
@@ -111,8 +105,19 @@ def probabilstic_odom_estimation(commands, translation_variance_scale=0.1, rotat
     plt.plot(groundtruth_poses[:, 0], groundtruth_poses[:, 1], '--', color='black')
     plt.plot(odom_est_poses[:, 0], odom_est_poses[:, 1], '-', color='red')
 
+    plt.title('Probabilistic Odometry Pose Estimation\n[Translation Variance Scale = {}, Rotation Variance Scale = {}]'.format(translation_variance_scale, rotation_variance_scale))
+    plt.tight_layout()
+
+    plt.xlim(-2, 12)
+    plt.ylim(-7, 7)
     plt.show()
 
 if __name__ == '__main__':
 
-    probabilstic_odom_estimation(sequence_03_commands, translation_variance_scale=0.01, rotation_variance_scale=0.01)
+    probabilstic_odom_estimation(main_sequence_commands, translation_variance_scale=0.01, rotation_variance_scale=0.01)
+
+    probabilstic_odom_estimation(main_sequence_commands, translation_variance_scale=0.05, rotation_variance_scale=0.01)
+
+    probabilstic_odom_estimation(main_sequence_commands, translation_variance_scale=0.01, rotation_variance_scale=0.05)
+
+    probabilstic_odom_estimation(main_sequence_commands, translation_variance_scale=0.05, rotation_variance_scale=0.05)
