@@ -81,12 +81,12 @@ class grid_based_odom:
 
             self.calc_grid += pose_est_distribution_value       # Accumulate all the PDF of pose estimation distribution
 
-        # Find the estimated pose coordinate with highest estimation probabilty
-        pose_est_idx = np.unravel_index(np.argmax(self.calc_grid), shape=self.calc_grid.shape)
-
+        # Find the estimated pose coordinate from mean of top 10 estimation probabilty values
+        pose_est_idx = np.unravel_index(np.argsort(np.ravel(self.calc_grid))[-10:], shape=self.calc_grid.shape)
+        
         # Update current pose estimation
-        self.pose_est[0] = pose_est_idx[0]  
-        self.pose_est[1] = pose_est_idx[1]
+        self.pose_est[0] = np.mean(pose_est_idx[0])
+        self.pose_est[1] = np.mean(pose_est_idx[1])
         self.pose_est[2] = np.random.normal(loc=self.pose_est[2] + dtheta, scale=self.rotation_variance, size=1)[0]
 
         # Update groundtruth pose
