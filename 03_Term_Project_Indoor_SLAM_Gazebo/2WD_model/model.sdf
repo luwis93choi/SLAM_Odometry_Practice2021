@@ -260,52 +260,84 @@
                 </material>
             </visual>
 
-            <!-- Sensor data simulation of 3D LiDAR -->
-            <sensor name='lidar_data' type='ray'>
-                <pose>0 0 0.0175 0 0 0</pose>   <!-- Origin point of 3D LiDAR rays -->
-                <always_on>1</always_on>        <!-- Decide whether sensor is to be updated at update rate -->
-                <update_rate>30</update_rate>   <!-- Update rate of sensor [Hz] -->
-                <visualize>true</visualize>     <!-- Visualization on/off in Gazebo GUI -->
+            <sensor type="gpu_ray" name="head_hokuyo_sensor">
+                <pose>0 0 0.0175 0 0 0</pose>
+                <visualize>true</visualize>
+                <update_rate>40</update_rate>
                 <ray>
                     <scan>
-                        <horizontal>    <!-- Horizontal characteristics of 3D LiDAR -->
-                            <samples>360</samples>          <!-- Number of rays in single horizontal laser scan -->
-                            <resolution>1</resolution>      <!-- Number to be multiplied with samples -->
-                            <min_angle>-3.14</min_angle>    <!-- Minimum angle of 3D LiDAR horizontal scan -->
-                            <max_angle>3.14</max_angle>     <!-- Maximum angle of 3D LiDAR horizontal scan -->
+                        <horizontal>
+                            <samples>720</samples>
+                            <resolution>1</resolution>
+                            <min_angle>-1.570796</min_angle>
+                            <max_angle>1.570796</max_angle>
                         </horizontal>
-                        <vertical>      <!-- Vertical characteristics of 3D LiDAR -->
-                            <samples>32</samples>               <!-- Number of rays in single vertical laser scan -->
-                            <resolution>1</resolution>          <!-- Number to be multiplied with samples -->
-                            <min_angle>0.04308</min_angle>      <!-- 2.47 degree in rad -->
-                            <max_angle>-0.24492</max_angle>     <!-- -14.04 degree in rad -->
-                        </vertical>
                     </scan>
-                    <range>     <!-- Sensor range characteristics -->
-                        <min>0.1</min>                  <!-- Minimum range of single laser ray -->
-                        <max>1.2</max>                  <!-- Maximum range of single laser ray -->
-                        <resolution>0.05</resolution>   <!-- Linear resolution of each ray -->
+                    <range>
+                        <min>0.10</min>
+                        <max>30.0</max>
+                        <resolution>0.01</resolution>
                     </range>
-                    <noise>     <!-- Sensor Noise characteristics -->
-                        <type>gaussian</type>       <!-- Sensor noise type -->
-                        <mean>0</mean>              <!-- Mean of gaussian sensor noise -->
-                        <stddev>3</stddev>          <!-- Standard deviation of gaussian sensor noise -->
+                    <noise>
+                        <type>gaussian</type>
+                        <mean>0.0</mean>
+                        <stddev>0.01</stddev>
                     </noise>
                 </ray>
-
-                <!-- ROS2 plugin for LiDAR sensor data topic publish -->
-                <plugin name='lidar_pub' filename='libgazebo_ros_ray_sensor.so'>
-                    <ros>
-                        <namespace>/agent_gazebo</namespace>                        <!-- Namespace for current lidar sensor model -->
-                        <argument>--ros-args --remap ~/out:=scan</argument>         <!-- Name mapping for sensor output -->
-                    </ros>
-                    <output_type>sensor_msgs/LaserScan</output_type>        <!-- Topic type for lidar data topic -->
-                </plugin>
+                <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_gpu_laser.so">
+                    <topicName>/scan</topicName>
+                    <frameName>lidar_top</frameName>
+                </plugin>   
             </sensor>
-
         </link>
 
-        <joint type='revolute' name='lidar_joint'>
+        <link name='imu_link'>
+            <pose>0 0 0.1 0 0 0</pose>
+            <inertial>
+                <mass>0.001</mass>
+                <inertia>
+                    <ixx>0.00001</ixx>
+                    <iyy>0.00001</iyy>
+                    <izz>0.000001</izz>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyz>0</iyz>
+                </inertia>
+            </inertial>
+
+            <visual name='imu_visual'>
+                <geometry>
+                    <box>
+                        <size>0.03 0.03 0.015</size>
+                    </box>
+                </geometry>
+
+                <material>
+                    <diffuse>1 0 0 1</diffuse>
+                </material>
+            </visual>
+
+            <gravity>true</gravity>
+            <sensor name="imu_sensor" type="imu">
+                <always_on>true</always_on>
+                <update_rate>100</update_rate>
+                <visualize>true</visualize>
+                <topic>__default_topic__</topic>
+                <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+                    <topicName>imu</topicName>
+                    <bodyName>imu_link</bodyName>
+                    <updateRateHZ>10.0</updateRateHZ>
+                    <gaussianNoise>0.0</gaussianNoise>
+                    <xyzOffset>0 0 0</xyzOffset>
+                    <rpyOffset>0 0 0</rpyOffset>
+                    <frameName>imu_link</frameName>
+                    <initialOrientationAsReference>false</initialOrientationAsReference>
+                </plugin>
+                <pose>0 0 0 0 0 0</pose>
+            </sensor>
+        </link>
+
+        <joint type='fixed' name='lidar_joint'>
             <pose>0 0 -0.035 0 0 0</pose>
             <parent>lidar_base</parent>
             <child>lidar_top</child>
@@ -314,6 +346,14 @@
             </axis>
         </joint>
 
+        <joint type='fixed' name='imu_joint'>
+            <pose>0 0 0 0 0 0</pose>
+            <parent>chassis</parent>
+            <child>imu_link</child>
+            <axis>
+                <xyz>0 0 1</xyz>
+            </axis>
+        </joint>
 
         <joint type='fixed' name='lidar_base_joint'>
             <parent>chassis</parent>
@@ -350,9 +390,11 @@
             <robot_base_frame>chassis</robot_base_frame>        <!-- Model base link frame name -->
         </plugin>
 
+        <!--
         <plugin name='lidar_control' filename='libgazebo_ros_joint_state_publisher.so'>
             <joint_name>lidar_joint</joint_name>
         </plugin>
+        --> 
 
     </model>
 </sdf>
