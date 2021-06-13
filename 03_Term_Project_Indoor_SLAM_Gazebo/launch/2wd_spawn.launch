@@ -15,4 +15,27 @@
         args="-sdf -file $(find 2WD_SLAM)/model/2WD_model/model.sdf -model 2WD -x 0 -y 0 -z 0.3"
         output="screen" />
 
+    <node
+        name="tf_broadcaster"
+        pkg="2WD_SLAM"
+        type="tf_broadcaster.py"
+        output="screen"> 
+    </node>  
+
+    <node name="imu_filter_madgwick" pkg="imu_filter_madgwick" type="imu_filter_node">
+        <param name="use_mag" type="bool" value="false"/>
+        <param name="_publish_tf" type="bool" value="false"/>
+        <param name="_world_frame" type="string" value="enu"/>
+        <remap from="imu/data_raw" to="/imu"/>
+    </node>
+
+    <node name="slam_gmapping" pkg="gmapping" type="slam_gmapping">
+        <param name="scan" value="/scan"/>
+        <param name="map_update_interval" value="2"/>
+        <param name="particles" value="20"/>
+	    <param name="delta" value="0.1"/>
+        <param name="linearUpdate" value="0.1"/>
+        <param name="angularUpdate" value="0.5"/>
+    </node>
+
 </launch>
