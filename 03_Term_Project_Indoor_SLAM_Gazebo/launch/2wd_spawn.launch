@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+    <node
+        name="robot_house"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-sdf -file $(find 2WD_SLAM)/model/Robot_House/model.sdf -model robot_house -x 0 -y 0 -z 0"
+        output="screen" />
+
+    <node
+        name="model_2wd_spawn"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-sdf -file $(find 2WD_SLAM)/model/2WD_model/model.sdf -model 2WD -x 0 -y 0 -z 0.3"
+        output="screen" />
+
+</launch>
