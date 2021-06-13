@@ -360,34 +360,33 @@
             <child>lidar_base</child>
         </joint>
 
-        <!-- ROS2 plugin for 2WD differential drive joint control -->
-        <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
-            <ros>
-                <namespace>/agent_gazebo</namespace>        <!-- Namespace for current model's diff drive plugin topics -->
-                <argument>cmd_vel:=cmd_vel</argument>       <!-- Name mapping for Linear & Angular Velocity Control Topics [geometry_msgs/msg/Twist] -->
-                <argument>odom:=odom</argument>             <!-- Name mapping for Odometry Topics [nav_msgs/msg/Odometry] -->
-            </ros>
+        <!-- ROS1 plugin for 2WD differential drive joint control -->
+        <plugin name='differential_drive_controller' filename='libgazebo_ros_diff_drive.so'>
+
+            <updateRate>100</updateRate>
 
             <!-- Wheels -->
-            <left_joint>left_wheel_hinge</left_joint>       <!-- Name of joint / motor for left wheel -->
-            <right_joint>right_wheel_hinge</right_joint>    <!-- Name of joint / motor for right wheel -->
+            <leftJoint>left_wheel_hinge</leftJoint>       <!-- Name of joint / motor for left wheel -->
+            <rightJoint>right_wheel_hinge</rightJoint>    <!-- Name of joint / motor for right wheel -->
 
             <!-- Kinematics -->
-            <wheel_separation>0.26</wheel_separation>   <!-- Distance between the center of one wheel to the other [m] -->
-            <wheel_diameter>0.2</wheel_diameter>        <!-- Diameter of wheels -->
+            <wheelSeparation>0.26</wheelSeparation>   <!-- Distance between the center of one wheel to the other [m] -->
+            <wheelDiameter>0.2</wheelDiameter>        <!-- Diameter of wheels -->
 
-            <!-- Limits -->
-            <max_wheel_torque>20</max_wheel_torque>                 <!-- Max torque to be produced by wheel revolution [Nm] -->
-            <max_wheel_acceleration>1.0</max_wheel_acceleration>    <!-- Max wheel acceleration for revolution [rad/s^2] -->
+            <!-- ROS1 Topic Output Setting -->
+            <commandTopic>cmd_vel</commandTopic>
+            <odometryTopic>odom</odometryTopic>
 
-            <!-- ROS2 Message Output Setting -->
-            <publish_odom>true</publish_odom>               <!-- Decide whether to publish odometry topic -->
-            <publish_odom_tf>true</publish_odom_tf>         <!-- Decide whether to publish odometry tf -->
-            <publish_wheel_tf>true</publish_wheel_tf>       <!-- Decide whether to publish wheel tf -->
+            <odometrySource>1</odometrySource>
+
+            <!-- ROS1 Message Output Setting -->
+            <publishOdom>true</publishOdom>               <!-- Decide whether to publish odometry topic -->
+            <publishWheelTF>true</publishWheelTF>       <!-- Decide whether to publish wheel tf -->
+            <publishWheelJointState>true</publishWheelJointState>
 
             <!-- Frame -->
-            <odometry_frame>odom</odometry_frame>               <!-- Odometry frame name -->
-            <robot_base_frame>chassis</robot_base_frame>        <!-- Model base link frame name -->
+            <odometryFrame>odom</odometryFrame>               <!-- Odometry frame name -->
+            <robotBaseFrame>base_link</robotBaseFrame>        <!-- Model base link frame name -->
         </plugin>
 
         <!--
