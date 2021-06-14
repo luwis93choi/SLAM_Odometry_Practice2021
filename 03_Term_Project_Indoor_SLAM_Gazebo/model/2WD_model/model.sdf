@@ -23,7 +23,7 @@
         <static>false</static>
 
         <!-- Rectangular base of the robot -->
-        <link name='chassis'>
+        <link name='base_link'>
         
             <!-- Position of the center will be: -->
             <!-- X = 0m | Y = 0m | Z = 0.1m -->
@@ -128,7 +128,7 @@
         <!-- [Left Wheel Motor/Joint] -->
         <joint type='revolute' name='left_wheel_hinge'>
             <pose>0 0 -0.03 0 0 0</pose>
-            <parent>chassis</parent>
+            <parent>base_link</parent>
             <child>left_wheel</child>
             <axis>
                 <xyz>0 0 1</xyz>
@@ -164,7 +164,7 @@
         <!-- [Right Wheel Motor/Joint] -->
         <joint type='revolute' name='right_wheel_hinge'>
             <pose>0 0 0.03 0 0 0</pose>
-            <parent>chassis</parent>
+            <parent>base_link</parent>
             <child>right_wheel</child>
             <axis>
                 <xyz>0 0 1</xyz>
@@ -348,7 +348,7 @@
 
         <joint type='fixed' name='imu_joint'>
             <pose>0 0 0 0 0 0</pose>
-            <parent>chassis</parent>
+            <parent>base_link</parent>
             <child>imu_link</child>
             <axis>
                 <xyz>0 0 1</xyz>
@@ -356,7 +356,7 @@
         </joint>
 
         <joint type='fixed' name='lidar_base_joint'>
-            <parent>chassis</parent>
+            <parent>base_link</parent>
             <child>lidar_base</child>
         </joint>
 
