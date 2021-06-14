@@ -1,4 +1,4 @@
-image: /home/pmh5050/catkin_ws/src/SLAM_Odometry_Practice2021/03_Term_Project_Indoor_SLAM_Gazebo/map/my_map.pgm
+image: ./my_map.pgm
 resolution: 0.050000
 origin: [-10.000000, -10.000000, 0.000000]
 negate: 0
