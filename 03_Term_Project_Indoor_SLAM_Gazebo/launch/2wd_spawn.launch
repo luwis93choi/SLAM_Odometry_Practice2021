@@ -42,4 +42,7 @@
         <param name="map_frame"  value="map"/>
     </node>
 
+    <node name='teleop' pkg='teleop_twist_keyboard' type='teleop_twist_keyboard'>
+    </node>
+
 </launch>
