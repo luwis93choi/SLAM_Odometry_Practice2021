@@ -3,7 +3,7 @@
 <launch>
     <arg name="debug" default="false"/>
     <arg name="gui" default="true"/>
-    <arg name="pause" default="true"/>
+    <arg name="pause" default="false"/>
     <arg name="world" default="$(find 2WD_SLAM)/world/Robot_House_World.world"/>
 
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -13,4 +13,12 @@
         <arg name="paused" value="$(arg pause)"/>
         <arg name="use_sim_time" value="true"/>
     </include>
+
+    <node
+        name="robot_world"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        args="-sdf -file $(find 2WD_SLAM)/map/map_model/env_map/baseline_map.sdf -model robot_world -x -40 -y -5 -z 0"
+        output="screen" />
+
 </launch>
