@@ -1,7 +1,0 @@
-image: /home/pmh5050/catkin_ws/src/SLAM_Odometry_Practice2021/03_Term_Project_Indoor_SLAM_Gazebo/custom_map/custom_map.png
-resolution: 0.0033926754832146
-origin: [0.0, 0.0, 0.0]
-occupied_thresh: 0.5
-free_thresh: 0.2
-negate: 0
-
