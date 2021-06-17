@@ -15,8 +15,6 @@ tf_msgs_base2odom = geometry_msgs.msg.TransformStamped()
 
 def tf_update(imu_data, gazebo_link_data):
 
-    # rospy.loginfo(rospy.get_caller_id() + '\ntranslation : {}\norientation : {}'.format(gazebo_link_data.pose[1].position, imu_data.orientation))
-    
     base_idx = gazebo_link_data.name.index('2WD::base_link')      # Find the index of 2WD base link in Gazebo Link States
     tf_msgs_base2odom.header.stamp = rospy.Time.now()
     tf_msgs_base2odom.header.frame_id = 'odom'
