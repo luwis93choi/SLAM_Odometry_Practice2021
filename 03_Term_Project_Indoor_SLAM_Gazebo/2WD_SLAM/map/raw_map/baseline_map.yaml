@@ -1,0 +1,7 @@
+image: baseline_map.png
+resolution: 0.3
+origin: [0.0, 0.0, 0.0]
+occupied_thresh: 0.5
+free_thresh: 0.2
+negate: 0
+
