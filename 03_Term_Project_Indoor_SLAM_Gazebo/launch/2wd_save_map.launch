@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<launch>
-    <node 
-        name="map_saver"
-        pkg="map_server"
-        type="map_saver"
-        args="-f $(find 2WD_SLAM)/map/my_map"
-        output="screen" />
-</launch>
